@@ -1,5 +1,6 @@
 .App {
   text-align: center;
+  flex-direction: column;
 }
 
 .App-logo {
@@ -14,25 +15,72 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
 }
 
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.geography {
+  outline: none;
+}
+
+.france-map {
+  width: 50%;
+  height: 50%;
+}
+
+.config {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.game {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  margin: 20px;
+}
+
+.table-input {
+  align-self: flex-start;
+  table-layout: fixed;
+  width: 600px;
+}
+
+.table-input td + .table-input th{
+  padding: 0;
+}
+
+.code {
+  width: 10%;
+}
+
+.name + .chef-lieu{
+  width: 31%;
+}
+
+.code input{
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.table-container {
+  flex:1;
+  overflow-y: auto;
+}
+
+
+
+.table-input input {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  display: block;
+  border: none;
+  font-size: 16px;
+  text-align:center;
 }
