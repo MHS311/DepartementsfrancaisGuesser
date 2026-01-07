@@ -1,7 +1,6 @@
 import './App.css';
 import  React, { useState, useEffect } from "react";
-import { render } from "react-dom";
-import { ComposableMap, Geographies, Geography, Marker, Markers } from "react-simple-maps";
+import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
 import franceGeo from "./departements-fr.geojson";
 import GuessLine from './GuessLine.js';
 import pointOnSurface from "@turf/point-on-surface";
