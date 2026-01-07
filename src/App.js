@@ -54,58 +54,72 @@ function App() {
           });
       };
       setIngame(true);
+      setCentre([]);
     }
   };
 
+  const handleAbandonButton = (gamemode) => {
+    if (ingame) {
+      fetch(franceGeo)
+        .then((res) => res.json())
+        .then((data) => {
+          const sortedDepartments = data.features.sort((a, b) => a.properties.code < b.properties.code ? -1 : 1);
+          setGuesses(sortedDepartments);
+          setCentre(sortedDepartments.map((dep)=>{return ({coords:pointOnSurface(dep.geometry), number:dep.properties.code})}));
+        })
+    }
+    setIngame(false);
+  }
 
   return (
     <div className="App">
       <header className="App-header">
         <h3>DépartementsfrançaisGuesser</h3>
       </header>
-      <div className="config">
-        <fieldset>
-          <legend>Game mode :</legend>
-          <div>
-            <input type="radio"
-                   id="infinite"
-                   name="gamemode"
-                   value="infinite"
-                   onChange={(e)=>setGamemode(e.target.value)}
-                   checked={gamemode==="infinite"} />
-            <label htmlFor="infinite">Infini</label>
-          </div>
+      <main>
+        <div className="config">
+          <fieldset>
+            <legend>Game mode :</legend>
+            <div>
+              <input type="radio"
+                     id="infinite"
+                     name="gamemode"
+                     value="infinite"
+                     onChange={(e)=>setGamemode(e.target.value)}
+                     checked={gamemode==="infinite"} />
+              <label htmlFor="infinite">Infini</label>
+            </div>
 
-          <div>
-            <input type="radio"
-                   id="classical"
-                   name="gamemode"
-                   value="classical"
-                   onChange={(e)=>setGamemode(e.target.value)}
-                   checked={gamemode==="classical"} />
-            <label htmlFor="classical">Classique (10 départements)</label>
-          </div>
+            <div>
+              <input type="radio"
+                     id="classical"
+                     name="gamemode"
+                     value="classical"
+                     onChange={(e)=>setGamemode(e.target.value)}
+                     checked={gamemode==="classical"} />
+              <label htmlFor="classical">Classique (10 départements)</label>
+            </div>
 
-          <div>
-            <input type="radio"
-                   id="linear"
-                   name="gamemode"
-                   value="linear"
-                   onChange={(e)=>setGamemode(e.target.value)}
-                   checked={gamemode==="linear"} />
-            <label htmlFor="linear">Linéaire</label>
-          </div>
-        </fieldset>
-        <button onClick={()=>handlePlayButton(gamemode)} >Play</button>
-        <button onClick={()=>setIngame(false)} >Abandon</button>
-      </div>
-      <main className="game">
+            <div>
+              <input type="radio"
+                     id="linear"
+                     name="gamemode"
+                     value="linear"
+                     onChange={(e)=>setGamemode(e.target.value)}
+                     checked={gamemode==="linear"} />
+              <label htmlFor="linear">Linéaire</label>
+            </div>
+          </fieldset>
+          <button onClick={()=>handlePlayButton(gamemode)} >Play</button>
+          <button onClick={()=>handleAbandonButton(gamemode)} >Abandon</button>
+        </div>
         <div className="table-container">
           <table className="table-input" border="1" cellpadding="5" cellspacing="0">
             <thead>
               <th className="code" >Numéro</th>
               <th className="name">Département</th>
               <th className="chef-lieu">Chef-lieu</th>
+              <th className="locate">Placer</th>
             </thead>
             {ingame ? (
               <tbody>
