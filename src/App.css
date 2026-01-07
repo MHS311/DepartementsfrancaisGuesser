@@ -39,7 +39,7 @@
 }
 .game {
   display: flex;
-  align-items: center;
+  align-items: top;
   flex-direction: row;
   margin: 20px;
 }
@@ -71,8 +71,6 @@
   flex:1;
   overflow-y: auto;
 }
-
-
 
 .table-input input {
   width: 100%;
