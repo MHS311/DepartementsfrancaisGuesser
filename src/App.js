@@ -10,12 +10,13 @@ function App() {
   const [gamemode,setGamemode] = useState("infinite");
   const [guesses, setGuesses] = useState([]);
   const [hints, setHints] = useState([]);
-  const [centre, setCentre] = useState([]);
+  const [centre, setCentre] = useState({});
+  const [centreReverse, setCentreReverse] = useState({});
   const [ingame, setIngame] = useState(false);
   const [locateCode, setLocateCode] = useState(null);
-  const [hover, setHover] = useState(null);
 
   window.centre = centre;
+  window.centreReverse = centreReverse;
   useEffect(()=>{
     fetch(franceGeo)
       .then((res) => res.json())
@@ -26,13 +27,26 @@ function App() {
           acc[dep.properties.code] = {loc:pointOnSurface(dep.geometry), dep:dep.properties.code};
           return acc;
         }, {}))
+        setCentreReverse(sortedDepartments.reduce((acc, dep) => {
+          acc[dep.properties.code] = {loc:pointOnSurface(dep.geometry), dep:dep.properties.code};
+          return acc;
+        }, {}))
       })
   }, {})
 
   const handleSelect = (dep) => {
     if (ingame) {
       if (!(locateCode === null)) {
+        if (locateCode in centre) {
+          setCentreReverse(()=>{
+            const temp = centreReverse;
+            delete temp[centre[locateCode].dep]
+            return temp;
+          })
+        }
         setCentre({...centre, [locateCode]: {loc:pointOnSurface(dep.geometry), dep: dep.properties.code}});
+
+        setCentreReverse({...centreReverse, [dep.properties.code]:{loc:pointOnSurface(dep.geometry), dep:locateCode}});
         setLocateCode(null);
       }
     }
@@ -69,6 +83,7 @@ function App() {
       };
       setIngame(true);
       setCentre({});
+      setCentreReverse({});
       setSelected(null);
     }
   };
@@ -84,9 +99,14 @@ function App() {
           acc[dep.properties.code] = {loc:pointOnSurface(dep.geometry), dep:dep.properties.code};
             return acc;
           }, {}))
+          setCentreReverse(sortedDepartments.reduce((acc, dep) => {
+            acc[dep.properties.code] = {loc:pointOnSurface(dep.geometry), dep:dep.properties.code};
+            return acc;
+          }, {}))
         })
     }
     setIngame(false);
+    setSelected(null);
   }
 
   return (
@@ -177,16 +197,12 @@ function App() {
               geographies.map((geo) => (
                 <Geography
                   key={geo.rsmKey}
-                  className="geography"
+                  className={"geography"
+                    + (ingame ? (geo.properties.code in centreReverse ? (centreReverse[geo.properties.code].dep === geo.properties.code ? " correct" : " incorrect") : "") : (selected === geo.properties.nom ? " locate" : ""))}
                   geography={geo}
                   id={"dep-" + geo.properties.code}
                   onClick={()=>handleSelect(geo)}
                   onMouseEnter={()=>handleDepartementHover(geo)}
-                  style={{
-                    default: { fill: selected === geo.properties.nom ? "#F00" : "#DDD", stroke: "#000" },
-                    hover: { fill: selected === geo.properties.nom ? "#F00" : "#BABABA", stroke: "#000" },
-                    pressed: { fill: selected === geo.properties.nom ? "#F00" : "#BABABA", stroke: "#000" },
-                  }}
                 />
               ))
             }

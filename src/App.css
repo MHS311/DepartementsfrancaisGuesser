@@ -31,11 +31,6 @@ body {
   color: #61dafb;
 }
 
-
-.geography {
-  outline: none;
-}
-
 .france-map {
   grid-area: map;
   width: 100%;
@@ -101,10 +96,47 @@ main {
   border: none;
   font-size: 16px;
   text-align:center;
+  background: none;
 }
 
 
 .locate-img {
   height: 20px;
   cursor: pointer;
+}
+
+
+.geography {
+  fill: #DDD;
+  stroke: #000;
+  outline: none;
+  transition: fill 0.1s ease;
+}
+
+.geography:hover {
+  fill: #BABABA;
+}
+
+.geography:active {
+  fill: #BABABA;
+}
+
+.geography.incorrect {
+  fill: #F00;
+}
+
+.geography.incorrect:hover {
+  fill: #F00;
+}
+
+.geography.correct, .geography.locate{
+  fill: #01B314;
+}
+
+.geography.correct:hover, .geography.locate:hover{
+  fill: #01B314;
+}
+
+td.correct {
+  background-color: #01B314;
 }
