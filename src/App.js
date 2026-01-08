@@ -12,20 +12,34 @@ function App() {
   const [hints, setHints] = useState([]);
   const [centre, setCentre] = useState([]);
   const [ingame, setIngame] = useState(false);
+  const [locateCode, setLocateCode] = useState(null);
+  const [hover, setHover] = useState(null);
 
+  window.centre = centre;
   useEffect(()=>{
     fetch(franceGeo)
       .then((res) => res.json())
       .then((data) => {
         const sortedDepartments = data.features.sort((a, b) => a.properties.code < b.properties.code ? -1 : 1);
         setGuesses(sortedDepartments);
-        setCentre(sortedDepartments.map((dep)=>{return ({coords:pointOnSurface(dep.geometry), number:dep.properties.code})}));
+        setCentre(sortedDepartments.reduce((acc, dep) => {
+          acc[dep.properties.code] = {loc:pointOnSurface(dep.geometry), dep:dep.properties.code};
+          return acc;
+        }, {}))
       })
-  }, [])
+  }, {})
 
   const handleSelect = (dep) => {
+    if (ingame) {
+      if (!(locateCode === null)) {
+        setCentre({...centre, [locateCode]: {loc:pointOnSurface(dep.geometry), dep: dep.properties.code}});
+        setLocateCode(null);
+      }
+    }
     setSelected(dep.properties.nom);
-    setCentre([...centre, {coords:pointOnSurface(dep.geometry), number:dep.properties.code}]);
+  };
+
+  const handleDepartementHover = (dep) => {
   };
 
   const handlePlayButton = (gamemode) => {
@@ -54,18 +68,22 @@ function App() {
           });
       };
       setIngame(true);
-      setCentre([]);
+      setCentre({});
+      setSelected(null);
     }
   };
 
-  const handleAbandonButton = (gamemode) => {
+  const handleAbandonButton = () => {
     if (ingame) {
       fetch(franceGeo)
         .then((res) => res.json())
         .then((data) => {
           const sortedDepartments = data.features.sort((a, b) => a.properties.code < b.properties.code ? -1 : 1);
           setGuesses(sortedDepartments);
-          setCentre(sortedDepartments.map((dep)=>{return ({coords:pointOnSurface(dep.geometry), number:dep.properties.code})}));
+          setCentre(sortedDepartments.reduce((acc, dep) => {
+          acc[dep.properties.code] = {loc:pointOnSurface(dep.geometry), dep:dep.properties.code};
+            return acc;
+          }, {}))
         })
     }
     setIngame(false);
@@ -119,18 +137,28 @@ function App() {
               <th className="code" >Numéro</th>
               <th className="name">Département</th>
               <th className="chef-lieu">Chef-lieu</th>
-              <th className="locate">Placer</th>
+              <th className="locate">{ingame ? "Placer" : "Trouver"}</th>
             </thead>
             {ingame ? (
               <tbody>
                 {guesses.map((guess,index) => (
-                  <GuessLine key={index} guess={guess} given={hints[index]}/>
+                  <GuessLine key={index}
+                             guess={guess}
+                             given={hints[index]}
+                             ingame={ingame}
+                             setSelected={setSelected}
+                             setLocateCode={setLocateCode}/>
                 ))}
               </tbody>)
               :(
               <tbody>
                 {guesses.map((guess,index) => (
-                  <GuessLine key={index} guess={guess} given={-1}/>
+                  <GuessLine key={index}
+                             guess={guess}
+                             given={-1}
+                             ingame={ingame}
+                             setSelected={setSelected}
+                             setLocateCode={setLocateCode}/>
                 ))}
               </tbody>)
             }
@@ -151,7 +179,9 @@ function App() {
                   key={geo.rsmKey}
                   className="geography"
                   geography={geo}
+                  id={"dep-" + geo.properties.code}
                   onClick={()=>handleSelect(geo)}
+                  onMouseEnter={()=>handleDepartementHover(geo)}
                   style={{
                     default: { fill: selected === geo.properties.nom ? "#F00" : "#DDD", stroke: "#000" },
                     hover: { fill: selected === geo.properties.nom ? "#F00" : "#BABABA", stroke: "#000" },
@@ -161,18 +191,19 @@ function App() {
               ))
             }
           </Geographies>
-          {(centre.length>0) && (
-            centre.map((marker)=> {
-              console.log("marker:", marker);
+          {(Object.keys(centre).length>0) && (
+            Object.keys(centre).map((marker)=> {
+              console.log(marker);
+              console.log(centre[marker]);
               return (
-                <Marker coordinates={marker.coords.geometry.coordinates}>
+                <Marker coordinates={centre[marker].loc.geometry.coordinates}>
                   <text
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fontSize={14}
                     fontWeight="bold"
                   >
-                    {marker.number}
+                    {marker}
                   </text>
                 </Marker>
               )})

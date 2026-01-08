@@ -1,13 +1,26 @@
 import './GuessLine.js';
 import { React } from "react";
 
-function GuessLine({key, guess, given}) {
+function GuessLine({key, guess, given, ingame, setSelected, setLocateCode}) {
+  
+  const handleLocateButton = () =>{
+    if (ingame) {
+      setLocateCode(guess.properties.code);
+    } else {
+      setSelected(guess.properties.nom);
+    }
+  }
+
+
   return (
     <tr>
       <td className="code">{(given === 0 || given === -1) ? <strong>{guess.properties.code}</strong> : <input type="text" name="numero" />}</td>
       <td className="name">{(given === 1 || given === -1) ? <strong>{guess.properties.nom}</strong> : <input type="text" name="departement" />}</td>
       <td className="chef-lieu">{(given === 2 || given === -1) ? <strong>{guess.properties["chef-lieu"]}</strong> : <input type="text" name="chef_lieu" />}</td>
-      <td className="locate"> <img url="img/locate.png"/> </td>
+      <td className="locate"
+          onClick={handleLocateButton}>
+        <img className="locate-img" src={require('./img/locate.png')}/>
+      </td>
     </tr>
   )
 }
