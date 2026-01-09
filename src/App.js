@@ -209,6 +209,8 @@ function App() {
         setCentreReverse({...centreReverse, [dep.properties.code]:{loc:adjustCentre(pointOnSurface(dep.geometry), dep.properties.code), dep:locateCode}});
         setLocateCode(null);
       }
+    } else {
+      
     }
     setSelected(dep.properties.nom);
   };
@@ -329,7 +331,11 @@ function App() {
                              given={hints[index]}
                              ingame={ingame}
                              setSelected={setSelected}
-                             setLocateCode={setLocateCode}/>
+                             setLocateCode={setLocateCode}
+                             centre={centre}
+                             setCentre={setCentre}
+                             centreReverse={centreReverse}
+                             setCentreReverse={setCentreReverse}/>
                 ))}
               </tbody>)
               :(
@@ -340,7 +346,9 @@ function App() {
                              given={-1}
                              ingame={ingame}
                              setSelected={setSelected}
-                             setLocateCode={setLocateCode}/>
+                             setLocateCode={setLocateCode}
+                             centre={centre}
+                             setCentre={setCentre}/>
                 ))}
               </tbody>)
             }
@@ -370,7 +378,6 @@ function App() {
                       className={"geography"
                         + (ingame ? (geo.properties.code in centreReverse ? (centreReverse[geo.properties.code].dep === geo.properties.code ? " correct" : " incorrect") : "") : (selected === geo.properties.nom ? " locate" : ""))}
                       geography={geo}
-                      id={"dep-" + geo.properties.code}
                       onClick={()=>handleSelect(geo)}
                       onMouseEnter={()=>handleDepartementHover(geo)}
                     />
