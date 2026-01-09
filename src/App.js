@@ -190,6 +190,7 @@ function App() {
         centreDep.geometry.coordinates[0]+=0.02;
         centreDep.geometry.coordinates[1]+=0.005;
         break;
+      default:
     }
     return centreDep;
   }

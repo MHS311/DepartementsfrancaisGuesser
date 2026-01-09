@@ -32,7 +32,7 @@ function GuessLine({ guess, given, ingame, setSelected, setLocateCode, centre, s
   }
 
   const isCorrect = 
-    given != -1 && (
+    given !== -1 && (
       given === 0 ? (
         guess.properties.code in centre ? (
           centre[guess.properties.code].dep === guess.properties.code
