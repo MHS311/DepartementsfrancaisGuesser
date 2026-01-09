@@ -140,3 +140,8 @@ main {
 td.correct {
   background-color: #01B314;
 }
+
+g.rsm-markers text {
+  user-select: none;
+  pointer-events: none;
+}

@@ -34,7 +34,7 @@ function GuessLine({ guess, given, ingame, setSelected, setLocateCode}) {
       </td>
       <td className="locate"
           onClick={handleLocateButton}>
-        <img className="locate-img" src={require('./img/locate.png')}/>
+        <img className="locate-img" src={require('./img/locate.png')} alt="Placer"/>
       </td>
     </tr>
   )
