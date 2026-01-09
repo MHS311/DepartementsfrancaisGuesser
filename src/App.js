@@ -32,7 +32,7 @@ function App() {
           return acc;
         }, {}))
       })
-  }, {})
+  }, [])
 
   const handleSelect = (dep) => {
     if (ingame) {
@@ -152,12 +152,14 @@ function App() {
           <button onClick={()=>handleAbandonButton(gamemode)} >Abandon</button>
         </div>
         <div className="table-container">
-          <table className="table-input" border="1" cellpadding="5" cellspacing="0">
+          <table className="table-input" border="1" cellPadding="5" cellSpacing="0">
             <thead>
-              <th className="code" >Numéro</th>
-              <th className="name">Département</th>
-              <th className="chef-lieu">Chef-lieu</th>
-              <th className="locate">{ingame ? "Placer" : "Trouver"}</th>
+              <tr>
+                <td className="code" >Numéro</td>
+                <td className="name">Département</td>
+                <td className="chef-lieu">Chef-lieu</td>
+                <td className="locate">{ingame ? "Placer" : "Trouver"}</td>
+              </tr>
             </thead>
             {ingame ? (
               <tbody>
@@ -208,11 +210,9 @@ function App() {
             }
           </Geographies>
           {(Object.keys(centre).length>0) && (
-            Object.keys(centre).map((marker)=> {
-              console.log(marker);
-              console.log(centre[marker]);
+            Object.keys(centre).map((marker, index)=> {
               return (
-                <Marker coordinates={centre[marker].loc.geometry.coordinates}>
+                <Marker key={index} coordinates={centre[marker].loc.geometry.coordinates}>
                   <text
                     textAnchor="middle"
                     dominantBaseline="middle"
